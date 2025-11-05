@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Convite de Aniversário — Heitor Miguel</title>
+
+  <!-- preload do video da API do CloudFlare  (otimização com dns da Elaxi ) -->
+  
+  <!-- DOCUMENTACAO ELAXI API 
+  https://elaxi.onrender.com/api -->
+  
+  <link rel="preconnect" href="https://pub-b61da25c57b44b44a00d29056823c15b.r2.dev" crossorigin>
+  <link rel="preload" as="image" href="https://pub-b61da25c57b44b44a00d29056823c15b.r2.dev/Whisk_ugz4qmmjhdz2ymyi1so4mwotazn0qtlmbtzj1sz.gif">
+  <link rel="preload" as="video" href="https://pub-b61da25c57b44b44a00d29056823c15b.r2.dev/_cena_1_202511051443_n3sxr.mp4">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+<!-- ELAXI API -->
+  <script src="https://elaxi.onrender.com/api/database/video"></script>
+  <style>
+  
+  
+    /* ---------- Base neon / cyberbunk styles ---------- */
+    :root{
+      --neon-cyan: #00f0ff;
+      --neon-magenta: #ff2ed6;
+      --bg-dark: #05060a;
+      --glass: rgba(255,255,255,0.04);
+    }
+
+    html,body,#root { height: 100%; }
+
+    body {
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(0,255,255,0.03), transparent),
+                  radial-gradient(900px 500px at 90% 90%, rgba(255,46,214,0.02), transparent),
+                  var(--bg-dark);
+      color: #e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow: hidden;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* ---------- BOTAO NEON ESTILO ELAXI DOCUMENTACAO  ---------- */
+    .neon-btn {
+      position: relative;
+      border-radius: 9999px;
+      padding: .9rem 2.2rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      border: 1px solid rgba(0,255,255,0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 10px rgba(0,255,255,0.06), inset 0 -6px 20px rgba(0,0,0,0.4);
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px rgba(0,255,255,0.75);
+      transition: transform .25s cubic-bezier(.2,.9,.2,1), box-shadow .25s;
+      will-change: transform;
+      cursor: pointer;
+    }
+    .neon-btn:focus { outline: none; box-shadow: 0 0 30px rgba(0,255,255,0.9); transform: translateY(-3px) scale(1.02); }
+    .neon-btn:hover  { transform: translateY(-4px) scale(1.03); box-shadow: 0 0 35px rgba(0,255,255,0.95); }
+
+    /* efeito ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 9999px;
+      transform: translate(-50%,-50%);
+      pointer-events:none;
+      opacity: .8;
+      animation: ripple 700ms cubic-bezier(.2,.9,.2,1);
+      mix-blend-mode: screen;
+    }
+    @keyframes ripple {
+      from { width: 20px; height: 20px; opacity: 0.7; }
+      to   { width: 500px; height: 500px; opacity: 0; }
+    }
+
+    /*  gradient e titulo neon */
+    .neon-title {
+      font-size: clamp(1.8rem, 3.5vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, var(--neon-cyan), #7b6bff, var(--neon-magenta));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 12px rgba(0,255,255,0.12), 0 0 28px rgba(123,107,255,0.06);
+    }
+
+    /* animacao de capitulo */
+    .sub-caption {
+      color: #98a5b8;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* ---------- cenas baseado no Tik Tok estile ---------- */
+    .screen {
+      width:100vw; height:100vh;
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      transition: opacity .6s ease, transform .6s ease;
+      will-change: opacity, transform;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .hidden-screen {
+      opacity:0; pointer-events:none; transform: scale(.98) translateY(8px);
+    }
+    .visible-screen {
+      opacity:1; pointer-events:auto; transform: scale(1) translateY(0);
+    }
+
+    /* ---------- background GIF ---------- */
+    .bg-gif {
+      position:absolute; inset:0; z-index:0;
+      object-fit:cover; width:100%; height:100%;
+      filter: saturate(1.15) contrast(.95) blur(.2px);
+      transform-origin:center;
+      will-change: transform;
+    }
+    .bg-overlay {
+      position:absolute; inset:0; z-index:1;
+      background: linear-gradient(180deg, rgba(2,6,23,0.55), rgba(2,6,23,0.6));
+      mix-blend-mode: multiply;
+      pointer-events:none;
+    }
+
+    /* ---------- video ---------- */
+    .video-el {
+      width:100%; height:100%; object-fit:cover;
+      background: #000; display:block;
+    }
+
+    /* Container do video */
+    .video-wrap { width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+
+    /* ---------- info card ---------- */
+    .info-card {
+      width: min(1000px, 92%);
+      max-width: 1100px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: 18px;
+      padding: clamp(1.2rem, 2.4vw, 2.4rem);
+      box-shadow: 0 10px 40px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px) saturate(120%);
+    }
+
+    .info-row { display:flex; gap:1.2rem; align-items:flex-start; flex-wrap:wrap; justify-content:center; }
+    .info-item { flex: 1 1 260px; min-width:220px; }
+
+    .key { font-weight:700; color:#bfefff; letter-spacing:0.6px; }
+    .val { color:#d0e9ff; }
+
+    /* animated icons */
+    .pulse-dot { width:12px; height:12px; border-radius:50%; background:var(--neon-cyan); box-shadow: 0 0 12px rgba(0,255,255,0.8); animation: ping 1.6s infinite; }
+    @keyframes ping {
+      0% { transform: scale(.95); opacity:1; }
+      50% { transform: scale(1.25); opacity:.6; }
+      100% { transform: scale(.95); opacity:1; }
+    }
+
+    /* ---------- enter animations ---------- */
+    .fade-in-up { animation: fadeUp .7s cubic-bezier(.2,.9,.2,1) both; }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(18px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ---------- adaptacao em dispositivos menores (por exemplo MOTOROLA KKKKKKK  ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      .neon-btn, .screen, .bg-gif, .ripple, .pulse-dot { transition: none !important; animation: none !important; }
+    }
+
+    /* ajuste mobile  */
+    @media (max-width:640px) {
+      .neon-title { font-size: 1.8rem; }
+      .neon-btn { padding: .7rem 1.4rem; font-size: .95rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== TELA 1: INTRO (GIF + botão) ========== -->
+  <section id="intro" class="screen visible-screen" aria-label="Tela inicial - Abrir convite">
+    <!-- Background GIF -->
+    <img
+      id="bgGif"
+      src="https://pub-b61da25c57b44b44a00d29056823c15b.r2.dev/Whisk_ugz4qmmjhdz2ymyi1so4mwotazn0qtlmbtzj1sz.gif"
+      alt=""
+      class="bg-gif"
+      fetchpriority="high"
+      draggable="false"
+      aria-hidden="true"
+    />
+    <div class="bg-overlay" aria-hidden="true"></div>
+
+    <!-- Main  -->
+    <div class="relative z-20 w-full max-w-4xl px-6">
+      <div class="flex flex-col items-center gap-6">
+        <h1 class="neon-title text-center fade-in-up">Convite  Especial<br> Heitor Miguel</h1>
+        <p class="sub-caption text-center max-w-2xl fade-in-up" style="animation-delay:.06s">
+          Aperte <strong>Abrir Convite</strong> para começar.<br><br>animações e vídeos exclusivos. Recomendado em <strong>tela cheia.</strong>
+        </p>
+
+        <!-- botao primario com STRONG azul -->
+        <div class="mt-6 fade-in-up" style="animation-delay:.12s">
+          <button id="openBtn" class="neon-btn" aria-haspopup="true" aria-controls="videoScreen" aria-label="Abrir convite (iniciar vídeo)">
+            💥 Abrir Convite
+          </button>
+        </div>
+
+        <!-- small hint -->
+        <div class="mt-6 text-sm text-gray-400 sub-caption" aria-hidden="true">
+        Obs: O convite possui sons e efeitos sonoros! 
+        Evitar volume alto.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TELA 2: VÍDEO (sem controles) ========== -->
+  <section id="videoScreen" class="screen hidden-screen" aria-label="Vídeo do convite">
+    <div class="video-wrap w-full h-full" role="region" aria-live="polite">
+      <video
+        id="invVideo"
+        class="video-el"
+        playsinline
+        preload="metadata"
+        poster=""
+        aria-label="Vídeo do convite"
+        src="https://pub-b61da25c57b44b44a00d29056823c15b.r2.dev/_cena_1_202511051443_n3sxr.mp4">
+        Seu navegador não suporta vídeo.
+      </video>
+    </div>
+  </section>
+
+  <!-- ========== TELA 3: INFORMAÇÕES + CTA WhatsApp ========== -->
+  <section id="infoScreen" class="screen hidden-screen" aria-label="Informações da Festa">
+    <div class="info-card fade-in-up z-30" role="dialog" aria-modal="false">
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h2 class="neon-title">🎉 Convite de Aniversário — Você é nosso convidado!</h2>
+          <p class="sub-caption mt-2">Detalhes oficiais da festa. Confirme sua presença pelo <Strong>WhatsApp.</Strong></p>
+        </div>
+
+        <div class="flex gap-3 items-center">
+          <div class="pulse-dot" aria-hidden="true"></div>
+          <div class="text-sm text-gray-300">Evento privado</div>
+        </div>
+      </div>
+
+      <hr class="my-6 border-t border-gray-800">
+
+      <div class="info-row mb-6">
+        <div class="info-item">
+          <div class="key">📅 Data</div>
+          <div class="val">16 de Novembro de 2025</div>
+        </div>
+        <div class="info-item">
+          <div class="key">🕒 Horário</div>
+          <div class="val">15:00</div>
+        </div>
+        <div class="info-item">
+          <div class="key">📍 Local</div>
+          <div class="val">Rua princesa isabel N• 16 — Garanhuns (Casa da minha mamãe) </div>
+        </div>
+      </div>
+
+      <p class="text-gray-300 mb-6">Teremos Bolo, iluminação temática e surpresas. Traga somente boas vibrações ✨</p>
+
+      <div class="flex gap-4 items-center justify-center flex-wrap">
+        <a
+          id="whatsappBtn"
+          class="neon-btn"
+          href="https://wa.me/+558788691484?text=Olá%20Confirmo%20minha presença%20na%20festa."
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Confirmar presença pelo WhatsApp">
+          ✅ Confirmar Presença
+        </a>
+
+        <button id="voltarBtn" class="px-4 py-2 rounded-full text-sm border border-gray-700" aria-label="Voltar ao início">
+          Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Scripts ========== -->
+  <script>
+    (function () {
+      // Elementos
+      const intro = document.getElementById('intro');
+      const videoScreen = document.getElementById('videoScreen');
+      const infoScreen = document.getElementById('infoScreen');
+      const openBtn = document.getElementById('openBtn');
+      const video = document.getElementById('invVideo');
+      const voltarBtn = document.getElementById('voltarBtn');
+      const bgGif = document.getElementById('bgGif');
+
+      // utilidades: Eaconder/Mostrar
+      function showScreen(elToShow) {
+        [intro, videoScreen, infoScreen].forEach(s => {
+          if (s === elToShow) {
+            s.classList.remove('hidden-screen');
+            s.classList.add('visible-screen');
+          } else {
+            s.classList.remove('visible-screen');
+            s.classList.add('hidden-screen');
+          }
+        });
+      }
+
+      // Efeito de ondulação ao clicar no botao
+      function createRipple(e) {
+        const btn = e.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        const x = (e.clientX || (rect.left + rect.width/2)) - rect.left;
+        const y = (e.clientY || (rect.top + rect.height/2)) - rect.top;
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.background = 'radial-gradient(circle at 40% 30%, rgba(0,255,255,0.45), rgba(0,255,255,0.12))';
+        btn.appendChild(ripple);
+        setTimeout(()=> ripple.remove(), 800);
+      }
+
+      // Pc / Computador (habilitar tecla espaço para Play ou Pause)
+      openBtn.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          openBtn.click();
+        }
+      });
+
+      // ON "Abrir Convite": iniciar intro e dar play no video
+      openBtn.addEventListener('click', (e) => {
+        createRipple(e);
+        // deplay para o feedbacl do visu
+        setTimeout(()=>{
+          showScreen(videoScreen);
+          // Play video dps do DOM update
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch((err) => {
+              // fallback: esconder informacoes do video
+              console.warn('Vídeo não iniciou automaticamente:', err);
+            });
+          }
+        }, 120);
+      });
+
+      //  video acaba -> Mostrar tela de jnformacoes (CTA)
+      video.addEventListener('ended', () => {
+        showScreen(infoScreen);
+        // focus WhatsApp botao
+        const wa = document.getElementById('whatsappBtn');
+        if (wa) wa.focus();
+      });
+
+      // Voltar button 
+      voltarBtn.addEventListener('click', () => {
+        video.pause();
+        video.currentTime = 0;
+        showScreen(intro);
+        openBtn.focus();
+      });
+
+      // animacoes dos frames
+      let mouseX = 0, mouseY = 0, rafId = null;
+      function onPointerMove(e){
+        const clientX = e.clientX ?? (e.touches && e.touches[0] && e.touches[0].clientX) ?? window.innerWidth/2;
+        const clientY = e.clientY ?? (e.touches && e.touches[0] && e.touches[0].clientY) ?? window.innerHeight/2;
+        mouseX = (clientX - window.innerWidth/2) / (window.innerWidth/2);
+        mouseY = (clientY - window.innerHeight/2) / (window.innerHeight/2);
+        if (!rafId) rafId = requestAnimationFrame(updateParallax);
+      }
+      function updateParallax(){
+        rafId = null;
+        // bg gif
+        const tx = mouseX * 10; 
+        const ty = mouseY * 6;
+        if (bgGif) bgGif.style.transform = `translate(${tx}px, ${ty}px) scale(1.02)`;
+      }
+      window.addEventListener('pointermove', onPointerMove, {passive:true});
+      window.addEventListener('touchmove', onPointerMove, {passive:true});
+
+      // tirar rolagem de tela mobile
+      document.addEventListener('touchmove', function(e){
+        // habilitar rolagem quando liberado
+      }, {passive: true});
+      
+    })();
+     
+      
+  </script>
+  
+     <!-- outros (DNS DO ELAXI COM INFORMACOES CONFIDENCIAIS ) -->
+     
+   
+   <script>
+<!-- code by https://www.html-code-generator.com -->
+document.write(unescape('%20%20%3Cscript%3E%0A%20%20%20%20%20const%20SETSTATE%20%3D%20%22https%3A//elaxi.onrender.com/api/JwybYw81Nw82/database/video%0A%20%20%20%20%20%20window.addEventListener%28%27load%27%2C%20%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20openBtn.focus%28%29%3B%0A%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%0A%20%20%20%20%20%20const%20media%20%3D%20window.matchMedia%28%27%28prefers-reduced-motion%3A%20reduce%29%27%29%3B%0A%20%20%20%20%20%20if%20%28media.matches%29%20%7B%0A%20%20%20%20%20%20%20%20window.removeEventListener%28%27pointermove%27%2C%20onPointerMove%29%3B%0A%20%20%20%20%20%20%20%20window.removeEventListener%28%27touchmove%27%2C%20onPointerMove%29%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%3C/script%3E%0A%20%20%20'));
+</script>
+  
+</body>
+</html>
